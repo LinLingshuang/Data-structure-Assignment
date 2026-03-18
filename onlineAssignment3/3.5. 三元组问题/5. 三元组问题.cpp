@@ -19,6 +19,100 @@
  //   * 本题不保证#2、#3、#5、#6、#7数据点正确性。（2026.3.5）
 #include<iostream>
 #include<vector>
+#include<algorithm>
+using namespace std;
+
+double absoluteValue(double num) {
+	if (num < 0) {
+		return -num;
+	}
+	return num;
+}
+
+int main() {
+	int n, m, p;
+	cin >> n >> m >> p;
+	vector<pair<int, char >>num(n + m + p);
+	for (int i = 0; i < n + m + p; i++) {
+		if (i < n) {
+			cin >> num[i].first;
+			num[i].second = 'a';
+		}
+		else if (i < n + m) {
+			cin >> num[i].first;
+			num[i].second = 'b';
+		}
+		else {
+			cin >> num[i].first;
+			num[i].second = 'c';
+		}
+	}
+	sort(num.begin(), num.end());
+	bool firstfind = false;
+	double min = absoluteValue(num[n + m + p-1].first - num[0].first);
+
+	//cout << num[i].second<<':'<< num[i].first << ' ';
+	int i = 0, j = 0, k = 0,x=0;
+	while (x < n + m + p) {
+
+		if (num[x].second == 'a') i = x;
+		if (num[x].second == 'b') j = x;
+		if (num[x].second == 'c') k = x;
+		x++;
+		if (num[i].second != num[j].second && num[i].second != num[k].second && num[j].second != num[k].second) {
+			if (absoluteValue(num[i].first - num[j].first) + absoluteValue(num[i].first - num[k].first) + absoluteValue(num[j].first - num[k].first) < min) {
+				min = absoluteValue(num[i].first - num[j].first) + absoluteValue(num[i].first - num[k].first) + absoluteValue(num[j].first - num[k].first);
+			}
+
+		}
+	}
+	
+	cout << min;
+
+
+}
+/*
+5 7 3
+2 3 8 7 6
+1 11 25 0 4 15 9
+3 12 5
+*/
+/*#include<iostream>
+#include<vector>
+using namespace std;
+
+double absoluteValue(double num) {
+	if (num < 0) {
+		return -num;
+	}
+	return num;
+}
+
+int main() {
+		int n, m, k;
+	cin >> n >> m >> k;
+	cout << n << ' ' << m << ' ' << k << endl;
+	vector<int>a(n);
+	vector<int>b(m);
+	vector<int>c(k);
+
+	for (int i = 0; i < n; i++) {
+		cin >> a[i];
+		cout << a[i] << ' ';
+	}
+	
+	for (int i = 0; i < m; i++) {
+		cin >> b[i];
+		cout << b[i] << ' ';
+	}
+
+	for (int i = 0; i < k; i++) {
+		cin >> c[i];
+		cout << c[i] << ' ';
+	}
+}*/
+/*#include<iostream>
+#include<vector>
 using namespace std;
 
 double absoluteValue(double num) {
@@ -31,32 +125,43 @@ double absoluteValue(double num) {
 int main() {
 	int n, m, k;
 	cin >> n >> m >> k;
-	cout << n << ' ' << m << ' ' << k << endl;
 	vector<int>a(n);
 	vector<int>b(m);
 	vector<int>c(k);
-	
+
 	for (int i = 0; i < n; i++) {
 		cin >> a[i];
-		
+
 	}
+
 	for (int i = 0; i < m; i++) {
 		cin >> b[i];
+
 	}
 
 	for (int i = 0; i < k; i++) {
 		cin >> c[i];
-		
+
 	}
-	double min = absoluteValue(a[0]-b[0]) + absoluteValue(a[0]-c[0]) + absoluteValue(b[0]-c[0]);
+	bool firstfind = false;
+	double min = 0;
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < m; j++) {
 			for (int p = 0; p < k; p++) {
-				if (absoluteValue(a[i] - b[j]) + absoluteValue(a[i] - c[p]) + absoluteValue(b[j] - c[p]) < min) {
-					min = absoluteValue(a[i] - b[j]) + absoluteValue(a[i] - c[p]) + absoluteValue(b[j] - c[p]);
+				if (!firstfind) {
+					min = absoluteValue(a[i] - b[j]) + absoluteValue(a[i] - c[k]) + absoluteValue(b[j] - c[k]);
+					firstfind = true;
 				}
+				if (absoluteValue(a[i] - b[j]) + absoluteValue(a[i] - c[k]) + absoluteValue(b[j] - c[k]) < min) {
+					min = absoluteValue(a[i] - b[j]) + absoluteValue(a[i] - c[k]) + absoluteValue(b[j] - c[k]);
+
+				}
+
 			}
+
 		}
+
 	}
 	cout << min;
-}
+
+}*/

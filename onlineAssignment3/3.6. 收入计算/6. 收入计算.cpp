@@ -53,7 +53,7 @@ int main() {
 		else {
 			int min= absoluteValue(day-pre[0]);
 			for (int j = 0; j < i; j++) {
-				if (absoluteValue(day - pre[j] < min))min = absoluteValue(day - pre[j]);
+				if (absoluteValue(day - pre[j]) < min)min = absoluteValue(day - pre[j]);
 			}
 			sum += min;
 		}
