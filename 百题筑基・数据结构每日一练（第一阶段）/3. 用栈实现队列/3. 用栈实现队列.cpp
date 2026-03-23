@@ -1,5 +1,4 @@
-//3. 用栈实现队列
-//用栈实现队列
+//3. 用栈实现队列	
 //一、问题描述
 //仅使用两个栈实现队列的功能，支持以下操作：
 //ENQUEUE x：将元素x加入队尾
@@ -39,9 +38,95 @@
 //八、类库使用要求
 //只能使用两个栈（可以手动实现或使用STL stack），禁止使用队列。
 #include<iostream>
+#include<string>
 using namespace std;
 
+struct stack {
+	int* data = new int[100];
+	int n = 100;
+	int head = -1;
+	void checkAndMult() {
+		if (head == n-1) {
+			n += 100;
+			int* newdata = new int[n];
+			for (int i = 0; i < n - 100; i++) {
+				newdata[i] = data[i];
+			}
+			delete[]data;
+			data = newdata;
+		}
+	}
+
+};
+
+void enqueue(stack &stackIn,int num) {
+	stackIn.checkAndMult();
+	stackIn.head++;
+	stackIn.data[stackIn.head] = num;
+}
+void dequeue(stack &stackIn, stack &stackOut) {
+	if (stackOut.head == -1) {
+		if (stackIn.head == -1) {
+			cout << "EMPTY" << endl;
+		}
+		else {
+			int num = stackIn.head;
+			for (int i = 0; i <= num; i++) {
+				stackOut.checkAndMult();
+				stackOut.head++;
+				stackOut.data[stackOut.head] = stackIn.data[stackIn.head];
+				stackIn.head--;
+			}
+			cout << stackOut.data[stackOut.head] << endl;
+			stackOut.head--;
+		}
+	}
+	else {
+		cout << stackOut.data[stackOut.head] << endl;
+		stackOut.head--;
+	}
+}
+void peek(stack &stackIn, stack &stackOut) {
+	if (stackOut.head == -1) {
+		if (stackIn.head == -1) {
+			cout << "EMPTY" << endl;
+		}
+		else {
+			int num = stackIn.head;
+			for (int i = 0; i <= num; i++) {
+				stackOut.checkAndMult();
+				stackOut.head++;
+				stackOut.data[stackOut.head] = stackIn.data[stackIn.head];
+				stackIn.head--;
+			}
+			cout << stackOut.data[stackOut.head] << endl;
+		}
+	}
+	else {
+		cout << stackOut.data[stackOut.head] << endl;
+	}
+}
+
 int main() {
+	int m;
+	cin >> m;
+	stack stackIn;
+	stack stackOut;
+	string temp;
+	int tempNum;
+	for (int i = 0; i < m; i++) {
+		cin >> temp;
+		if (temp == "ENQUEUE") {
+			cin >> tempNum;
+			enqueue(stackIn, tempNum);
+		}
+		else if (temp == "DEQUEUE") {
+			dequeue(stackIn, stackOut);
+		}
+		else if (temp == "PEEK") {
+			peek(stackIn, stackOut);
+		}
+	}
 
 
 }
