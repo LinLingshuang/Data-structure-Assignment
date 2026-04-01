@@ -17,16 +17,19 @@
 因此其等待时间为5 - 2 = 3秒。第三个任务在第二个任务完成（第9秒）后开始，等待9 - 7 = 2秒。总等待时间 = 0 + 3 + 2 = 5。
 【评分标准】允许使用STL。*/
 #include<iostream>
+#include<vector>
 using namespace std;
 struct node {
-	int data;
+	pair<int, int> data;
 	node* next;
 	node() {
-		data = NULL;
+		data.first = NULL;
+		data.second = NULL;
 		next = NULL;
 	}
-	node(int val) {
-		data = val;
+	node(int f,int s) {
+		data.first = f;
+		data.second = s;
 		next = NULL;
 	}
 };
@@ -40,17 +43,44 @@ public:
 		end->next = end;
 		head = end;
 	}
-	void PUSH_BACK(int val) {
-		end->next = new node(val);
+	void PUSH_BACK(int f, int s) {
+		end->next = new node(f,s);
 		end = end->next;
 		end->next = head;
 	}
-	bool POP_BACK() {
+	void PUSH_FRONT(int f, int s) {
 		if (head == end) {
-			return false;
+			end->next = new node(f,s);
+			end = end->next;
+			end->next = head;
 		}
 		else {
-			//cout << end->data << endl;
+			node* p = head->next;
+			head->next = new node(f,s);
+			head->next->next = p;
+		}
+	}
+	pair<int, int> POP_FRONT() {
+		if (head == end) {
+			return pair<int, int>(NULL,NULL);
+		}
+		else {
+			pair<int, int> data = head->next->data;
+			node* p = head->next;
+			head->next = head->next->next;
+			if (end == p) {
+				end = head;
+			}
+			delete p;
+			return data;
+		}
+	}
+	pair<int, int> POP_BACK() {
+		if (head == end) {
+			return pair<int, int>(NULL, NULL);
+		}
+		else {
+			pair<int, int> data= end->data;
 			node* p = end;
 			node* q = head;
 			while (q->next != end) {
@@ -59,20 +89,77 @@ public:
 			end = q;
 			end->next = head;
 			delete p;
-			return true;
+			return data;
 		}
+	}
+	pair<int, int> FRONT() {
+		if (head == end) {
+			
+			return pair<int, int>(NULL, NULL);
+		}
+		else {
+			
+			return head->next->data;
+		}
+	}
+	pair<int, int> BACK() {
+		if (head == end) {
+			
+			return pair<int, int>(NULL, NULL);
+		}
+		else {
+			
+			return end->data;
+		}
+	}
+	int SIZE() {
+		int size = 0;
+		node* p = head;
+		while (p->next != head) {
+			p = p->next;
+			size++;
+		}
+		return size;
 	}
 };
 
 int main() {
 	int n;
-	listDeque a;
-	int t = 0;
-	int eless = 0;
+	cin >> n;
+	vector<pair<int,int>> job(n);
 	for (int i = 0; i < n; i++) {
-		int ar, ex;
-		cin >> ar >> ex;
-		
-
+		cin >> job[i].first >> job[i].second;
 	}
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n-1; j++) {
+			if (job[j].first > job[j + 1].first) {
+				pair<int, int>temp = job[j];
+				job[j] = job[j + 1];
+				job[j + 1] = temp;
+			}
+		}
+	}
+	listDeque myqeque;
+	for (int i = 0; i < n; i++) {
+		myqeque.PUSH_BACK(job[i].first, job[i].second);
+	}
+	int t = 0;
+	int sum = 0;
+	bool rest = true;
+	while (myqeque.SIZE() != 0) {
+		if (rest) {
+			t = myqeque.FRONT().first + myqeque.POP_FRONT().second;
+			rest = false;
+		}
+		else {
+			if (myqeque.FRONT().first > t) {
+				rest = true;
+			}
+			else {
+				sum += t - myqeque.FRONT().first;
+				t += myqeque.POP_FRONT().second;
+			}
+		}
+	}
+	cout << sum;
 }
