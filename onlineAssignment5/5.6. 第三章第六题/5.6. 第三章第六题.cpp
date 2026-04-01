@@ -1,20 +1,76 @@
-﻿// 5.6. 第三章第六题.cpp : 此文件包含 "main" 函数。程序执行将在此处开始并结束。
-//
+﻿/*6. 第三章第六题
+【问题描述】
+对于给定的正整数 n (n>2)，利用一个队列输出 n 阶杨辉三角形（帕斯卡三角形）。
+第n阶杨辉三角形的规则如下：
+第一行只有一个数字 1；
+每行的第一个和最后一个数都是 1；
+其余每个数等于上一行相邻两个数之和。
+示例：当 n=5 时，杨辉三角形的生成过程如下：
+1
+1 1
+1 2 1
+1 3 3 1
+1 4 6 4 1
+【输入形式】输入一个整数 n（n>2），表示杨辉三角形的阶数。
+【输出形式】输出 n 阶杨辉三角形，每行的数字以空格分隔。
+【样例输入】5
+【样例输出】
+1
+1 1
+1 2 1
+1 3 3 1
+1 4 6 4 1
+【样例说明】
+【评分标准】*/
+#include<iostream>
+using namespace std;
 
-#include <iostream>
-
-int main()
-{
-    std::cout << "Hello World!\n";
+struct node {
+	int data;
+	node* next;
+	node() {
+		data = NULL;
+		next = NULL;
+	}
+	node(int val) {
+		data = val;
+		next = NULL;
+	}
+};
+class listDeque {
+private:
+	node* head = new node(0);
+	node* end = new node(0);
+public:
+	listDeque(int n) {
+		head->next = new node(1);
+		head->next->next = end;
+		display();
+		for (int i = 1; i < n; i++) {
+			int temp = 0;
+			node* p = head;
+			for (int j = 0; j < i; j++) {
+				p->next->data = temp + p->next->data;
+				temp = p->next->data - temp;
+				p = p->next;
+			}
+			end->data = 1;
+			end->next = new node(0);
+			end = end->next;
+			display();
+		}
+	}
+	void display() {
+		node* p = head->next;
+		while (p->next != NULL) {
+			cout << p->data << ' ';
+			p = p->next;
+		}
+		cout << endl;
+	}
+};
+int main() {
+	int n;
+	cin >> n;
+	listDeque mLD(n);
 }
-
-// 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
-// 调试程序: F5 或调试 >“开始调试”菜单
-
-// 入门使用技巧: 
-//   1. 使用解决方案资源管理器窗口添加/管理文件
-//   2. 使用团队资源管理器窗口连接到源代码管理
-//   3. 使用输出窗口查看生成输出和其他消息
-//   4. 使用错误列表窗口查看错误
-//   5. 转到“项目”>“添加新项”以创建新的代码文件，或转到“项目”>“添加现有项”以将现有代码文件添加到项目
-//   6. 将来，若要再次打开此项目，请转到“文件”>“打开”>“项目”并选择 .sln 文件

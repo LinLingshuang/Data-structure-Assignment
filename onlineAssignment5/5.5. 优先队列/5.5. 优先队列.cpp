@@ -118,7 +118,6 @@ public:
 			return false;
 		}
 		else {
-			cout << head->next->data << endl;
 			node* p = head->next;
 			head->next = head->next->next;
 			if (end == p) {
