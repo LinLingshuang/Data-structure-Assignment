@@ -32,23 +32,318 @@ a*a-b*b
 */
 #include<iostream>
 #include<fstream>
+#include<vector>
 #include<stack>
 #include<string>
-#include<map>
 using namespace std;
 
-stack<char> getNPL(string input) {
+stack<string> getNPL(string input) {
+	stack<char>myOperator;
 
+	string tempNum;
+	string tempOperator;
+
+	stack<string>result;
+	bool inNum = false;
+	for (char c : input) {
+		if (isdigit(c)) {
+			tempNum.push_back(c);
+			inNum = true;
+		}
+		else if (!inNum&&isalpha(c)) {
+			tempNum.push_back(c);
+			result.push(tempNum);
+			tempNum.clear();
+		}
+		else if (c == '(') {
+			if (inNum) {
+				result.push(tempNum);
+				tempNum.clear();
+				inNum = false;
+			}
+			myOperator.push(c);
+		}
+		else if (c == ')') {
+			if (inNum) {
+				result.push(tempNum);
+				tempNum.clear();
+				inNum = false;
+			}
+			while (!myOperator.empty()&&myOperator.top() != '(') {
+				tempOperator = myOperator.top();
+				result.push(tempOperator);
+				myOperator.pop();
+			}
+			if (!myOperator.empty()) {
+				myOperator.pop();
+			}
+			else {
+				result.push("$");
+			}
+		}
+		else if (c == '*' || c == '/') {
+			if (inNum) {
+				result.push(tempNum);
+				tempNum.clear();
+				inNum = false;
+			}
+			if (!myOperator.empty()) {
+				if (myOperator.top() == '-' || myOperator.top() == '+' || myOperator.top() == '(') {
+					myOperator.push(c);
+				}
+				else {
+					tempOperator = myOperator.top();
+					result.push(tempOperator);
+					myOperator.pop();
+					myOperator.push(c);
+				}
+			}
+			else {
+				myOperator.push(c);
+			}
+		}
+		/*
+		else if (c == '+' || c == '-') {
+			if (inNum) {
+				result.push(tempNum);
+				tempNum.clear();
+				inNum = false;
+			}
+			if (!myOperator.empty()) {
+				if (myOperator.top() == '(') {
+					myOperator.push(c);;
+				}
+				else {
+					tempOperator = myOperator.top();
+					result.push(tempOperator);
+					myOperator.pop();
+					myOperator.push(c);
+				}
+			}
+			else {
+				myOperator.push(c);
+			}
+		}
+		*/
+		
+		else if (c == '+' || c == '-') {
+			if (inNum) {
+				result.push(tempNum);
+				tempNum.clear();
+				inNum = false;
+			}
+			// 修改：循环弹出所有栈顶运算符（直到遇到'('或栈空），因为所有运算符优先级都 >= +和-
+			while (!myOperator.empty() && myOperator.top() != '(') {
+				tempOperator = myOperator.top();
+				result.push(tempOperator);
+				myOperator.pop();
+			}
+			myOperator.push(c);
+		}
+	}
+	if (inNum) {
+		result.push(tempNum);
+		tempNum.clear();
+		inNum = false;
+	}
+	while (!myOperator.empty()) {
+		tempOperator = myOperator.top();
+		result.push(tempOperator);
+		myOperator.pop();
+	}
+	return result;
 }
+
+string check(stack<string>input, char label,bool &state) {
+	stack<string>reverse;
+	stack<int>num;
+	string result;
+	while (!input.empty()) {
+		reverse.push(input.top());
+		input.pop();
+	}
+	while (!reverse.empty()) {
+		if (isdigit(reverse.top()[0])) {
+			int temp = stoi(reverse.top());
+			num.push(temp);
+			reverse.pop();
+		}
+		else if (isalpha(reverse.top()[0])) {
+			int temp = reverse.top()[0];
+			num.push(temp);
+			reverse.pop();
+		}
+		else {
+			if (reverse.top() == "+") {
+				int first, second;
+				if (num.empty()) {
+					result = "表达式";
+					result.push_back(label);
+					result += "无效！";
+					state = false;
+					return result;
+				}
+				first = num.top();
+				num.pop();
+				if (num.empty()) {
+					result = "表达式";
+					result.push_back(label);
+					result += "无效！";
+					state = false;
+					return result;
+				}
+				second = num.top();
+				num.pop();
+				num.push(second + first);
+				reverse.pop();
+			}
+			else if (reverse.top() == "-") {
+				int first, second;
+				if (num.empty()) {
+					result = "表达式";
+					result.push_back(label);
+					result += "无效！";
+					state = false;
+					return result;
+				}
+				first = num.top();
+				num.pop();
+				if (num.empty()) {
+					result = "表达式";
+					result.push_back(label);
+					result += "无效！";
+					state = false;
+					return result;
+				}
+				second = num.top();
+				num.pop();
+				num.push(second - first);
+				reverse.pop();
+			}
+			else if (reverse.top() == "*") {
+				int first, second;
+				if (num.empty()) {
+					result = "表达式";
+					result.push_back(label);
+					result += "无效！";
+					state = false;
+					return result;
+				}
+				first = num.top();
+				num.pop();
+				if (num.empty()) {
+					result = "表达式";
+					result.push_back(label);
+					result += "无效！";
+					state = false;
+					return result;
+				}
+				second = num.top();
+				num.pop();
+				num.push(second * first);
+				reverse.pop();
+			}
+			else if (reverse.top() == "/") {
+				int first, second;
+				if (num.empty()) {
+					result = "表达式";
+					result.push_back(label);
+					result += "无效！";
+					state = false;
+					return result;
+				}
+				first = num.top();
+				if (first == 0) {
+					result = "表达式";
+					result.push_back(label);
+					result += "除0出错！";
+					state = false;
+					return result;
+				}
+				num.pop();
+				if (num.empty()) {
+					result = "表达式";
+					result.push_back(label);
+					result += "无效！";
+					state = false;
+					return result;
+				}
+				second = num.top();
+				num.pop();
+				num.push(second / first);
+				reverse.pop();
+			}
+			else {
+				result = "表达式";
+				result.push_back(label);
+				result += "无效！";
+				state = false;
+				return result;
+			}
+		}
+	}
+	result = to_string(num.top());
+	num.pop();
+	if (!num.empty()) {
+		result = "表达式";
+		result.push_back(label);
+		result += "无效！";
+		state = false;
+		return result;
+	}
+	return result;
+}
+
+string compare(stack<string>first, stack<string>second,char label) {
+	string result = "测试用例";
+	result.push_back(label);
+	result += "：";
+	string firstResult, secondResult;
+	bool state1=true, state2=true;
+	firstResult=check(first, '1', state1);
+	secondResult=check(second, '2', state2);
+	if (!state1) {
+		result += firstResult;
+		if (!state2) {
+			result += secondResult;
+			return result;
+		}
+		return result;
+	}
+	if (!state2) {
+		result += secondResult;
+		return result;
+	}
+
+	if (firstResult == secondResult) {
+		result += "TRUE";
+		return result;
+	}
+	else {
+		result += "FALSE";
+		return result;
+	}
+	return result;
+}
+
 
 int main() {
 	ifstream in;
 	in.open("in.txt");
+	ofstream out;
+	out.open("out.txt");
 	int n;
 	in >> n;
-	map<pair<stack<int>, stack<char>>, pair<stack<int>, stack<char>>>Allop;
-	for (int i = 0; i < n*2; i++) {
-		string temp;
-
+	cin >> n;
+	for (int i = 0; i < n; i++) {
+		string temp1;
+		string temp2;
+		in >> temp1>> temp2;
+		cin >> temp1 >> temp2;
+		stack<string> op1=getNPL(temp1);
+		stack<string> op2 = getNPL(temp2);
+		out<< compare(op1, op2, i + '1') << endl;
+		cout << compare(op1, op2, i + '1') << endl;
+		
 	}
 }

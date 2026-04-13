@@ -110,6 +110,15 @@ int main() {
 				myStack.push(c);
 			}
 		}
+		/*
+		else if (c == '+'||c=='-') {
+			// 修改：循环弹出所有栈顶运算符（直到遇到'('或栈空），因为所有运算符优先级都 >= +和-
+			while (myStack.top != 0 && myStack.myOperator[myStack.top-1] != '(') {
+				myStack.pop();
+			}
+			cout << ' ';
+			myStack.push(c);
+		}*/
 	}
 	int b = myStack.top;
 	for (int i = 0; i < b; i++) {
