@@ -75,7 +75,7 @@ template<class T>
 struct node {
 	T data;
 	node* next;
-	node(T val) {
+	node<T>(T val) {
 		data = val;
 		next = NULL;
 	}
@@ -289,8 +289,5 @@ int main() {
 			cout << "第" << i + 1 << "个" << inputClass << "样例:" << endl;
 			cout << "未知的数据类型: " << inputClass << endl;
 		}
-
 	}
-
-
 }
