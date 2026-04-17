@@ -1,28 +1,35 @@
-﻿/*1. 判断二叉树是否对称
+﻿/*2. 二叉树镜像翻转
 一、问题描述
-给定一棵二叉树，检查它是否是轴对称的（镜像对称）。
+给定一棵二叉树，将其镜像翻转（左右子树交换），然后输出翻转后的先序遍历序列。
 二、输入形式
 一行若干个整数，表示二叉树的先序遍历序列，空节点用-1表示。
 三、输出形式
-输出"YES"表示对称，输出"NO"表示不对称。
+输出镜像翻转后的二叉树的先序遍历序列，空节点不输出。
 四、样例输入
-1 2 3 -1 -1 4 -1 -1 2 4 -1 -1 3 -1 -1
+1 2 4 -1 -1 5 -1 -1 3 -1 6 -1 -1
 五、样例输出
-YES
+1 3 6 2 5 4
 六、样例说明
-对称二叉树：
+原二叉树：
     1
    / \
-  2   2
- / \ / \
-3  4 4  3
-以根节点为轴，左右子树镜像对称。
+  2   3
+ / \   \
+4   5   6
+镜像翻转后：
+    1
+   / \
+  3   2
+ /   / \
+6   5   4
+先序遍历：1 3 6 2 5 4
 七、评分标准
-共8个测试用例。
+共10个测试用例。
 八、类库使用要求
 必须手动实现二叉树结构。*/
 #include<iostream>
-#include<string>
+using namespace std;
+
 using namespace std;
 
 struct node {
@@ -39,7 +46,7 @@ struct node {
         left = NULL;
         right = NULL;
     }
-    node(const node &n) {
+    node(const node& n) {
         data = n.data;
         left = n.left;
         right = n.right;
@@ -52,7 +59,7 @@ public:
     tree() {
         root = NULL;
     }
-    void creatTree(node* &p) {
+    void creatTree(node*& p) {
         int input = -1;
         if (cin.peek() == EOF) {
             // 没有输入
@@ -69,41 +76,20 @@ public:
             creatTree(p->right);
         }
     }
-    bool isMirror() {
-        if (root == NULL) {
-            return true;
-        }
-        node* L=root->left;
-        node* R=root->right;
-        return search(L, R);
-   }
-    bool search(node* L, node* R) {
-        if (L == NULL && R == NULL) {
-            return true;
-        }
-        else  if (L == NULL && R != NULL) {
-            return false;
-        }
-        else  if (L != NULL && R == NULL) {
-            return false;
+    void getMirror(node* p) {
+        if (p != NULL) {
+            cout << p->data<<' ';
+            getMirror(p->right);
+            getMirror(p->left);
         }
         else {
-            return (L->data == R->data) && search(L->left, R->right) && search(L->right, R->left);
+            return;
         }
-       
-    }
+   }
 };
 
 int main() {
-    //string a;
-    //getline(cin, a);
-    //cout << a;
     tree myTree;
     myTree.creatTree(myTree.root);
-    if (myTree.isMirror()) {
-        cout << "YES";
-    }
-    else {
-        cout << "NO";
-    }
+    myTree.getMirror(myTree.root);
 }
