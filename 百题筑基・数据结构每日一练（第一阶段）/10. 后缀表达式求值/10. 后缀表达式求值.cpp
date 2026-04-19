@@ -1,20 +1,74 @@
-﻿// 10. 后缀表达式求值.cpp : 此文件包含 "main" 函数。程序执行将在此处开始并结束。
-//
+﻿/*10. 后缀表达式求值
+后缀表达式求值
+一、问题描述
+给定一个后缀表达式（逆波兰表达式），计算其结果。表达式中只包含非负整数和+、-、*、/四种运算符。
+注意：除法为整数除法，向零取整。
+二、输入形式
+一行若干个token，表示后缀表达式，以空格分隔。每个token要么是整数（0-1000），要么是运算符（+、-、*、/）。
+三、输出形式
+输出一个整数，表示表达式的值。
+四、样例输入
+2 3 + 4 *
+五、样例输出*/
+#include<iostream>
+#include<string>
+#include<stack>
+using namespace std;
 
-#include <iostream>
-
-int main()
-{
-    std::cout << "Hello World!\n";
+int main() {
+	string input;
+	getline(cin, input);
+	bool inNum = false;
+	stack<int>nums;
+	int num;
+	for (char c : input) {
+		if (isdigit(c)&&!inNum) {
+			num = 0;
+			num = c - '0';
+			inNum = true;
+		}
+		else if (isdigit(c) && inNum) {
+			num = num * 10 + c - '0';
+		}
+		else if (c==' ' && inNum) {
+			nums.push(num);
+			inNum = false;
+		}
+		else if (c == ' ' && !inNum) {
+			continue;
+		}
+		else if (c == '+') {
+			int frist, second;
+			frist = nums.top();
+			nums.pop();
+			second = nums.top();
+			nums.pop();
+			nums.push(second + frist);
+		}
+		else if (c == '-') {
+			int frist, second;
+			frist = nums.top();
+			nums.pop();
+			second = nums.top();
+			nums.pop();
+			nums.push(second - frist);
+		}
+		else if (c == '*') {
+			int frist, second;
+			frist = nums.top();
+			nums.pop();
+			second = nums.top();
+			nums.pop();
+			nums.push(second * frist);
+		}
+		else if (c == '/') {
+			int frist, second;
+			frist = nums.top();
+			nums.pop();
+			second = nums.top();
+			nums.pop();
+			nums.push((second - (second % frist)) / frist);
+		}
+	}
+	cout << nums.top();
 }
-
-// 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
-// 调试程序: F5 或调试 >“开始调试”菜单
-
-// 入门使用技巧: 
-//   1. 使用解决方案资源管理器窗口添加/管理文件
-//   2. 使用团队资源管理器窗口连接到源代码管理
-//   3. 使用输出窗口查看生成输出和其他消息
-//   4. 使用错误列表窗口查看错误
-//   5. 转到“项目”>“添加新项”以创建新的代码文件，或转到“项目”>“添加现有项”以将现有代码文件添加到项目
-//   6. 将来，若要再次打开此项目，请转到“文件”>“打开”>“项目”并选择 .sln 文件
