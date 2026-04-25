@@ -66,7 +66,7 @@ int main() {
 	}
 	else {
 		for (int temp : myList) {
-			cout << temp;
+			cout << temp << ' ';
 		}
 	}
 }
