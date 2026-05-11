@@ -1,0 +1,114 @@
+﻿/*3. 判断两棵二叉树是否相同
+一、问题描述
+给定两棵二叉树，判断它们是否相同（结构和节点值都相同）。
+
+二、输入形式
+两行输入，每行表示一棵二叉树的先序遍历序列，空节点用-1表示。
+
+三、输出形式
+输出"YES"表示两棵树相同，输出"NO"表示不同。
+
+四、样例输入
+
+1 2 4 -1 -1 5 -1 -1 3 -1 -1
+1 2 4 -1 -1 5 -1 -1 3 -1 -1
+五、样例输出
+
+YES
+六、样例说明
+两棵树的结构和节点值完全相同。
+
+七、评分标准
+共10个测试用例。
+
+八、类库使用要求
+必须手动实现二叉树结构。*/\
+#include<iostream>
+using namespace std;
+
+using namespace std;
+
+struct node {
+    int data;
+    node* left;
+    node* right;
+    node() {
+        data = 0;
+        left = NULL;
+        right = NULL;
+    }
+    node(int val) {
+        data = val;
+        left = NULL;
+        right = NULL;
+    }
+    node(const node& n) {
+        data = n.data;
+        left = n.left;
+        right = n.right;
+    }
+};
+
+class tree {
+public:
+    node* root;
+    tree() {
+        root = NULL;
+    }
+    void creatTree(node*& p) {
+        int input = -1;
+        if (cin.peek() == EOF) {
+            // 没有输入
+        }
+        else {
+            cin >> input;
+        }
+        if (input == -1) {
+            return;
+        }
+        else {
+            p = new node(input);
+            creatTree(p->left);
+            creatTree(p->right);
+        }
+    }
+};
+
+bool isEqual(node* A, node* B) {
+    node* AR = A;
+    node* BR = B;
+    if (AR == NULL && BR == NULL) {
+        return true;
+    }
+    else if (AR == NULL && BR != NULL) {
+        return false;
+    }
+    else if (AR != NULL && BR == NULL) {
+        return false;
+    }
+    else if (AR->data == BR->data) {
+        if (isEqual(AR->left, BR->left)) {
+            return isEqual(AR->right, BR->right);
+        }
+        else {
+            return false;
+        }
+    }
+    else {
+        return false;
+    }
+}
+
+int main() {
+    tree myTree;
+    tree myTree2;
+    myTree.creatTree(myTree.root);
+    myTree2.creatTree(myTree2.root);
+    if (isEqual(myTree.root, myTree2.root)) {
+        cout << "YES" << endl;
+    }
+    else {
+        cout << "NO" << endl;
+    }
+}
+
