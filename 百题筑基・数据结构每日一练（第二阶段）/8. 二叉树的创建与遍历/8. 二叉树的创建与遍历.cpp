@@ -29,3 +29,96 @@
 
 八、类库使用要求
 必须手动实现二叉树结构和遍历算法，可以使用queue。*/
+#include<iostream>
+#include<vector>
+using namespace std;
+
+struct node {
+    int data;
+    node* left;
+    node* right;
+    node() {
+        data = 0;
+        left = NULL;
+        right = NULL;
+    }
+    node(int val) {
+        data = val;
+        left = NULL;
+        right = NULL;
+    }
+    node(const node& n) {
+        data = n.data;
+        left = n.left;
+        right = n.right;
+    }
+};
+
+class tree {
+public:
+    node* root;
+    tree() {
+        root = NULL;
+    }
+    void creatTree(node*& p) {
+        int input = -1;
+        if (cin.peek() == EOF) {
+            // 没有输入
+        }
+        else {
+            cin >> input;
+        }
+        if (input == -1) {
+            return;
+        }
+        else {
+            p = new node(input);
+            creatTree(p->left);
+            creatTree(p->right);
+        }
+    }
+    //中序
+    void middleSearchTree(node* p) {
+        if (p == NULL) {
+            return;
+        }
+        middleSearchTree(p->left);
+        cout << p->data << ' ';
+        middleSearchTree(p->right);
+    }
+    //后序
+    void backSearchTree(node* p) {
+        if (p == NULL) {
+            return;
+        }
+        backSearchTree(p->left);
+        backSearchTree(p->right);
+        cout << p->data << ' ';
+    }
+    //层序
+    void lyarSearchTree(vector<node*>lyar) {
+        vector<node*>nextlyar;
+        for (node* p : lyar) {
+            if (p != NULL) {
+                cout << p->data << ' ';
+                nextlyar.push_back(p->left);
+                nextlyar.push_back(p->right);
+            }
+        }
+        if (!nextlyar.empty()) {
+            lyarSearchTree(nextlyar);
+        }
+    }
+};
+
+int main() {
+    tree myTree;
+    myTree.creatTree(myTree.root);
+    myTree.middleSearchTree(myTree.root);
+    cout << endl;
+    myTree.backSearchTree(myTree.root);
+    cout << endl;
+    vector<node*>lyar;
+    lyar.push_back(myTree.root);
+    myTree.lyarSearchTree(lyar);
+}

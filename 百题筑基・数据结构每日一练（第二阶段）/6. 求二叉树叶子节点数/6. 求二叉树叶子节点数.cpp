@@ -29,3 +29,71 @@
 
 八、类库使用要求
 必须手动实现二叉树结构。*/
+#include<iostream>
+using namespace std;
+
+using namespace std;
+
+struct node {
+    int data;
+    node* left;
+    node* right;
+    node() {
+        data = 0;
+        left = NULL;
+        right = NULL;
+    }
+    node(int val) {
+        data = val;
+        left = NULL;
+        right = NULL;
+    }
+    node(const node& n) {
+        data = n.data;
+        left = n.left;
+        right = n.right;
+    }
+};
+
+class tree {
+public:
+    node* root;
+    tree() {
+        root = NULL;
+    }
+    void creatTree(node*& p) {
+        int input = -1;
+        if (cin.peek() == EOF) {
+            // 没有输入
+        }
+        else {
+            cin >> input;
+        }
+        if (input == -1) {
+            return;
+        }
+        else {
+            p = new node(input);
+            creatTree(p->left);
+            creatTree(p->right);
+        }
+    }
+    int getleaves(node* p) {
+        if (p == NULL) {
+            return 0;
+        }
+        if (p->left == NULL && p->right == NULL) {
+            return 1;
+        }
+        else {
+            return getleaves(p->left) + getleaves(p->right);
+        }
+    }
+
+};
+
+int main() {
+    tree myTree;
+    myTree.creatTree(myTree.root);
+    cout << myTree.getleaves(myTree.root);
+}

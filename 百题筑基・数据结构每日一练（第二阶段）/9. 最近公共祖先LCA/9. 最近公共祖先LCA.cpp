@@ -36,3 +36,97 @@ LCA定义：对于有根树T的两个节点p、q，最近公共祖先表示为�
 
 八、类库使用要求
 必须手动实现二叉树结构。*/
+#include<iostream>
+#include<vector>
+using namespace std;
+
+struct node {
+    int data;
+    node* left;
+    node* right;
+    node() {
+        data = 0;
+        left = NULL;
+        right = NULL;
+    }
+    node(int val) {
+        data = val;
+        left = NULL;
+        right = NULL;
+    }
+    node(const node& n) {
+        data = n.data;
+        left = n.left;
+        right = n.right;
+    }
+};
+
+class tree {
+public:
+    node* root;
+    tree() {
+        root = NULL;
+    }
+    void creatTree(node*& p) {
+        int input = -1;
+        if (cin.peek() == EOF) {
+            // 没有输入
+        }
+        else {
+            cin >> input;
+        }
+        if (input == -1) {
+            return;
+        }
+        else {
+            p = new node(input);
+            creatTree(p->left);
+            creatTree(p->right);
+        }
+    }
+    int getLCA(node* r, int p, int q, bool& find) {
+        if (r == NULL) {
+            return 0;
+        }
+        else if (r->data == p || r->data == q) {
+            int result = getLCA(r->left, p, q, find) + getLCA(r->right, p, q, find);
+            if (result == 1 && !find) {
+                find = true;
+                return r->data;
+            }
+            else {
+                return result + 1;
+            }
+        }
+        else {
+            int result = getLCA(r->left, p, q, find) + getLCA(r->right, p, q, find);
+            if (result == 2 && !find) {
+                find = true;
+                return r->data;
+            }
+            else {
+                return result;
+            }
+        }
+    }
+};
+
+int main() {
+    int p, q;
+    cin >> p >> q;
+    tree myTree;
+    myTree.creatTree(myTree.root);
+    bool find = false;
+    int result = myTree.getLCA(myTree.root, p, q, find);
+    if (find) {
+        cout << result;
+    }
+    else {
+        if (p == q) {
+            cout << p;
+        }
+        else {
+            cout << -1;
+        }
+    }
+}
