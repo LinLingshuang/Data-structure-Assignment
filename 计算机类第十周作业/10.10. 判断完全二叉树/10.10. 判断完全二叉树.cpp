@@ -65,7 +65,9 @@ public:
                 creatTree(p->left, bt, position);
                 if (bt[position] == ',') {
                     position++;
-                    creatTree(p->right, bt, position);
+                    if (bt[position] != ')') {
+                        creatTree(p->right, bt, position);
+                    }
                 }
             }
             position++;
