@@ -25,3 +25,71 @@
 【评分标准】
 该题目有10个测试用例，每通过一个测试用例，得10分。
 */
+#include<iostream>
+#include<fstream>
+#include<vector>
+using namespace std;
+
+class city {
+public:
+	int name;
+	bool find = false;
+	vector<city*>otherCity;
+	city() {
+		name=0;
+		bool find = false;
+		otherCity= vector<city*>(0);
+	}
+	city(const city& c) {
+		name = c.name;
+		find = c.find;		
+		otherCity = c.otherCity;
+		
+	}
+};
+
+void search(city &c, vector<city>&findcity) {
+	if (!c.find) {
+		findcity.push_back(c);
+		c.find = true;
+		for (int i = 0; i < c.otherCity.size(); i++) {
+			search(*c.otherCity[i], findcity);
+		}
+	}
+	else {
+		return;
+	}
+	
+}
+
+int main() {
+	int n, m;
+	fstream in;
+	in.open("in.txt");
+	//cin >> n >> m;
+	in >> n >> m;
+	vector<city>allcity(n);
+	for (int i = 0; i < n; i++) {
+		allcity[i].name = i + 1;
+	}
+	for (int i = 0; i < m; i++) {
+		int city1, city2;
+		//cin >> city1 >> city2;
+		in >> city1 >> city2;
+		city* temp1 = &allcity[city2 - 1];
+		city* temp2 = &allcity[city1 - 1];
+		allcity[city1 - 1].otherCity.push_back(temp1);
+		allcity[city2 - 1].otherCity.push_back(temp2);
+	}
+	vector<city>findcity;
+	search(allcity[0], findcity);
+	int result = 0;
+	for (int i = 1; i < n; i++) {
+		if (!allcity[i].find) {
+			result++;
+			search(allcity[i], findcity);
+		}
+		
+	}
+	cout << result;
+}

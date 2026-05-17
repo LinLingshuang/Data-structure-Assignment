@@ -37,3 +37,113 @@ image.png
 测试数据的文件名为in.txt
 【评分标准】
 该题目有10个测试用例，每通过一个测试用例，得10分。*/
+#include<iostream>
+#include<algorithm>
+#include<stack>
+#include<vector>
+#include<fstream>
+using namespace std;
+
+struct node {
+	int data;
+	int pareant;
+	node() {
+		data = 0;
+		pareant = 0;
+	}
+	node(int d) {
+		data = d;
+		pareant = 0;
+	}
+	node(int d,int p) {
+		data = d;
+		pareant = p;
+	}
+};
+
+node tree[10000];
+
+void createTree(int& n1,int& n2) {
+	int n;
+	fstream in;
+	in.open("in.txt");
+	in >> n;
+	int cnt=0;
+	vector<int>check;
+	while(cnt<n) {
+		int p, c;
+		in >> p >> c;
+		bool findp = false;
+		bool findc = false;
+		for (int temp : check) {
+			if (temp == p)findp = true;
+			if (temp == c)findc = true;
+		}
+		if (!findp) {
+			check.push_back(p);
+			tree[p] = node(p);
+			cnt++;
+		}
+		if (!findc) {
+			check.push_back(c);
+			cnt++;
+		}
+		
+		tree[c] = node(c, p);
+	}
+	in >> n1 >> n2;
+}
+
+int getLCA(int n1, int n2) {
+	node x = tree[n1];
+	node y = tree[n2];
+
+	stack<int>parentX;
+	stack<int>parentY;
+
+	int pX = x.data;
+	while (pX != 0) {
+		parentX.push(tree[pX].data);
+		pX = tree[pX].pareant;
+	}
+
+	int pY = y.data;
+	while (pY != 0) {
+		parentY.push(tree[pY].data);
+		pY = tree[pY].pareant;
+	}
+
+	int LCAX = parentX.top();
+	int LCAY = parentY.top();
+	int temp = 0;
+	while (LCAX == LCAY) {
+		temp = LCAX;
+		parentX.pop();
+		parentY.pop();
+
+		if (!parentX.empty()) {
+			LCAX = parentX.top();
+		}
+		else {
+			return temp;
+		}
+
+		if (!parentY.empty()) {
+			LCAY = parentY.top();
+		}
+		else {
+			return temp;
+		}
+	}
+
+	return temp;
+
+}
+
+int main() {
+	int n1, n2;
+	createTree(n1, n2);
+
+	int result= getLCA(n1, n2);
+	cout << result;
+}
